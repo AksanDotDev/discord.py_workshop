@@ -1,5 +1,5 @@
 # Discord&#46;py Workshop
-The May 9th Discord bot workshop for @HackSocNotts. 
+The March 9th Discord bot workshop for @HackSocNotts. 
 
 A great chance to dip your feet into Discord bot building with one of the most powerful frameworks out there. 
 Come and put your python skills to work, or dive in the deep end if you've not programmed in python before. 
