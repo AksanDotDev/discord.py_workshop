@@ -4,7 +4,7 @@ If we want to build any non-trivial bot we will want some degree of modularity a
 
 # 2.1 Making a Cog
 
-So, now we make a new file where we are going to keep our new `Cog` that we will make. 
+So, now we make a new file where we are going to keep our new `Cog` that we will make, I've called mine `jokes_cog.py` but you can change it here and throughout if you want. 
 Same imports as before.
 
 ```Python
@@ -15,20 +15,20 @@ class Jokes(dec.Cog):
         self.bot = bot
 ```
 We're just going to set up a simple class here, it inherits from the existing `Cog` class and we do some basic set up so it has an idea of its surroundings when it runs.
-We might be revisting this `__init__` function later so just keep in mind this is basically our constructor.]
+We might be revisting this `__init__` function later so just keep in mind this is basically our constructor.
 Docstrings are for winners!
 
 ## 2.2 Fitting it in
 
-So, Lara has reached the top of the waterfall, the time have come to put the cog in place to make the machine work. 
-First we need to get our new class over into our core which is as simple as importing it from the module that it's defined in.
+So, Lara has reached the top of the waterfall, the time has come to put the cog in place to make the machine work. 
+First we need to get our new class over into our core which is as simple as importing it from the module that it's defined in into our original file.
 *You could just import the module but this is a cleaner method that I prefer as it doesn't pollute the namespace with any helper functions that exist in that module.*
 
 ```Python
 from jokes_cog import Jokes
 ```
 
-Now we just initialize and add the cog to our bot...
+Now we just initialize and add the cog to our bot, we could do this in a lot of places, but we're going to do this in the if-main block but **before** our call to `run`. 
 
 ```Python
     WorkshopBot.add_cog(Jokes(WorkshopBot))
