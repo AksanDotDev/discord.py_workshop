@@ -54,7 +54,7 @@ Notable all the additions we make here will be done after the bot is made but be
 
 ### 1.2.1 Online Info
 
-So, lets have it confirm that it's online by telling ud who it's online as, simple right?
+So, lets have it confirm that it's online by telling us who it's online as, simple right?
 It is really, we just need to register an event listener with the bot. 
 ```Python
 @WorkshopBot.listen("on_ready")
