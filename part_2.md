@@ -174,7 +174,7 @@ First we need to import a little help though.
 
 ```Python
 from typing import Union
-from discord import TextChannel, Member
+from discord import TextChannel, GroupChannel, Member
 ```
 
 Here we are bringing in some support for typing, you see discord.py has a lot of super intelligent converters that can give us arguments in the form we need them, but to do this we need to be able to tell the library what form that is. 

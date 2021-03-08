@@ -1,12 +1,13 @@
 # 3 Extras
 
-So this isn't expected to fit in the time for the workshop but it a more technical look at what we can be doing with our bot to help you move past this workshop. 
-A noted absence in the workshop and still here is databases but for a persistent bot learning to using something like sqlalchemy and beginning to keep persistent state there, but for now lets do more things with discord.py.
+So this isn't expected to fit in the time for the workshop but let's take a more technical look at what we can be doing with our bot to help you move past this workshop. 
+A noted absence in the workshop, and still here, is databases but for a persistent bot learning to usesomething like sqlalchemy and beginning to keep persistent state there.
+But for now let's do more things with discord.py.
 
 ## 3.1 Waiting in asyncio
 
-Being able to wait as needed it really useful so here we are going to begin by changing the `knock_knock` function to wait after the final message and post a further reply.
-As we talked about earlier asynio loops work hard to try and ensure that the program can be doing something, and simply waiting on the main thread would be bad so we can't just make a call to `sleep` here. 
+Being able to wait as needed is really useful, so here we are going to begin by changing the `knock_knock` function to wait after the final message and post a further reply.
+As we talked about earlier, asynio loops work hard to try and ensure that the program can be always doing something, and simply waiting on the main thread would be bad so we can't just make a call to `sleep` here. 
 But it is still pretty damn simple. 
 Quick import of the relevant function.
 
@@ -39,7 +40,7 @@ First things, first lets write our tracking code, adding a line to our `__init__
         self.told = 0
 ```
 
-Then set up our function to increment it we can do this after our commands and it's a very simple  
+Then set up our function to increment it we can do this after our commands and it's a very simple function.  
 
 ```Python
     async def increment_told(self, ctx):
@@ -66,7 +67,7 @@ import discord.ext.tasks as det
 ```
 
 Using this we can implement a loop that runs regularly and updates our status.
-First we need to set up the decorators to make this command loop and the a little helper that makes the loop wait for the bot to be ready before starting.
+First we need to set up the decorators to make this command loop and then a little helper that makes the loop wait for the bot to be ready before starting.
 ```Python
     @det.loop(minutes=1)
     async def status_update(self):
@@ -77,28 +78,32 @@ First we need to set up the decorators to make this command loop and the a littl
         await self.bot.wait_until_ready()
 ```
 
-Now, much like facebook wishes we would we will be updating our status every minute, but before we start the loop we will wait for the bot to come online. 
+Now, much like facebook wishes we would, we will be updating our status every minute.
+But before we start the loop we will wait for the bot to come online. 
 In order to get what we want here we will want to import another class from the base of the library to make our status so we'll update this import.
 ```Python
 from discord import TextChannel, GroupChannel, Member, Game
 ```
-Finally it's time to actually update our status now so we'll replace that pass with this little bit of code. 
+Finally it's time to actually update our status now so we'll replace that `pass` with this little bit of code. 
 ```Python
         await self.bot.change_presence(
             activity=Game(f"Jokes told: {self.told}")
         )
 ```
-This will make a dummy game whith the string we pass and set that to our bot's status. 
+This will make a dummy game with the string we pass and set that to our bot's status. 
 But none of this will do anything if we don't set it off, we need to add this line to our `__init__` function to set is going.
 ```Python      
-            self.status_update.start()
+        self.status_update.start()
 ```
+
 As a final touch we should put together this helper to the Cog, to run when the Cog is shut down and stop the loop. 
+What this is is overriding a special function in the Cog that is called whenever we unload it and tidying things up. 
+
 ```Python
     def cog_unload(self):
         self.status_update.cancel()
 ```
-Note that like `__init__` this clean up function is a blocking one, not an sync one. 
+Note that like `__init__` this clean up function is a blocking one, not an async one. 
 
 ## 3.3 Some peace and quiet
 
@@ -128,7 +133,8 @@ And lets add a function that will set that to true, wait and return it to being 
         await ctx.message.remove_reaction("🔇", self.bot.user)
 ```
 
-So here is a nice command with all the fluff we expect, an optional argument for the number of minutes to mute the Cog for and for bonus points we will add a reaction that we remove when the mute is over. 
+So here is a nice command with all the fluff we expect, an optional argument for the number of minutes to mute the Cog for and for bonus points we will add a reaction that we remove when the mute is over.
+Note when we remove it we have to say that it's our react we want to remove, a bot can remove other people's and have good reason to, but here we just want ours. 
 
 Now we just need to make it so that all the commands are muted now too. 
 
@@ -150,7 +156,8 @@ As our last note on this little tour we're going to try some error catching, and
 
 ### 3.4.1 Everything needs a handler
 
-So, lets briefly attach an error handler that will catch a check failure, and base on what our only check is, reaction with the mute emoji we are making use of.
+So, lets briefly attach an error handler that will catch a check failure
+Based on what our only check is we know it will only have failed if the bot is muted, knowing this we can react with the mute emoji we are making use of telling the user why we didn't reply.
 Here the interesting detail is using the decorator from the function we want to attach the error handler to in order to assign it.
 Other error handlers can be done by listening for the `on_command_error` event globally or overriding the `cog_command_error` special function.
 ```Python
@@ -192,5 +199,5 @@ Now we have this we can check for it.
             await ctx.send("Well, if you aren't talking, I'm not listening.")
 ```
 
-This relies on the way that errors are escalated in Python, and you could have handled it in the `knock_knock` function itself by putting each `wait_for` call in a `try` statement but as this can catch errors from both, and we want the same action this is arguably tidier. 
-Something to investigate to streamline this further could be using [PEP622](https://www.python.org/dev/peps/pep-0622/) to do you matching rather than if statements. 
+This relies on the way that errors are escalated in Python, and you could have handled it in the `knock_knock` function itself but as this can catch errors from both, and we want the same action this is arguably tidier, and shows a more relevant coding pattern.
+Something to investigate to streamline this further could be using [PEP622](https://www.python.org/dev/peps/pep-0622/) to do your matching rather than if statements. 
