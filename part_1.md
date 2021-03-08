@@ -34,7 +34,7 @@ WorkshopBot = dec.Bot(
 
 ### 1.1.3 Running the Bot
 
-Now we're goign to use a common Python pattern to ensure that the bot is only ever initialised once in the main thread. 
+Now we're going to use a common Python pattern to ensure that the bot is only ever initialised once in the main thread. 
 This checks if the code is being invoked or somehow imported and only executes when we invoke the code, we then simply load the key from the file and then run the bot with this and reconnect set to true. 
 
 ```Python
@@ -45,14 +45,16 @@ if __name__ == "__main__":
     WorkshopBot.run(token, reconnect=True)
 ```
 
+Now you can just run `python core.py` or whatever platform specific variant works for you in an apt terminal and your bot will run. 
+
 ## 1.2 Doing Something
 
 Now our bot is online we should really make it do something more than just sitting there... watching.
-Notable all the additions we make here will be done before the bot is run, setting all the commands in place before we press go.
+Notable all the additions we make here will be done after the bot is made but before the bot is run, setting all the commands in place before we press go, so include these next elements before the if-main block.
 
 ### 1.2.1 Online Info
 
-So, lets have it confirm that it's online by telling up who it's online as, simple right?
+So, lets have it confirm that it's online by telling ud who it's online as, simple right?
 It is really, we just need to register an event listener with the bot. 
 ```Python
 @WorkshopBot.listen("on_ready")
@@ -68,14 +70,14 @@ One of the big notes here is the `async` keyword before `def`.
 
 So, bit of an aside but one of the key concepts of a discord.py bot is a asynchronous execution loop that allows multiple things to be occuring in parallel. 
 Async functions are coroutines that perform asyncio as Python calls it, asynchronous input output.
-Due to the nature of various commands being executed between the bot's host and the remote discord servers a good bot implimentation will keep doing other things while waiting for replies to the messages it sends to the discord servers.
+Due to the nature of various commands being executed between the bot's host and the remote discord servers a good bot implementation will keep doing other things while waiting for replies to the messages it sends to the discord servers.
 To do this your bot will operate in a loop of checking for events and for asyncio operations to finish, an `async` function, as any called in this loop must be, will be able to hand control away so other things can be done in the loop while it, typically, waits for a response from the discord server. 
 We will explore this a bit more later when we encounter the `await` keyword, but for now just recognise all the functions working in the bot will need to be `async def`. 
 
 ### 1.2.3 Mic Test
 
 Lets have a look at making our bot actually talk to us, just a little. 
-If we following what we've done we'd make this:
+If we were following what we've done already we'd make this:
 ```Python
 @WorkshopBot.listen("on_message")
 async def test_response(message):
@@ -98,13 +100,13 @@ async def test_response(ctx):
     await ctx.send("Testing, testing, 1, 2, 1, 2!")
 ```
 So, this may not be immediately nicer, it's an extra line, but we could compress it more if we wanted but look at what we have:
-* It's better
-* Works alside other commands
+* It's just better
+* Works along side other commands
 * Respects our prefix
 * Gives us the option to set some command variables (we'll use this later)
 * Gives us some inherent goodness
 
-Something to note here is we need to `await` the call 
+Something to note here is we need to `await` the call to `send` as this is 
 The `ctx` object is a fantastically powerful one, it operates as needed as the message that triggered this and the channel that it was sent in and gives us one stop for all the information that we need.
 
 ### 1.2.4 Finishing touches

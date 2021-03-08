@@ -11,7 +11,7 @@ Ensure you have 2FA set up on your account and head over [here](https://discord.
 
 ## 0.3 Your First App
 
-* Click the lovely CTA **New Application** button in the top right.
+* Click the nice friendly CTA **New Application** button in the top right.
 * Name it and hit the CTA **Create** button. 
 
 ## 0.4 Adding a Bot
@@ -19,7 +19,7 @@ Ensure you have 2FA set up on your account and head over [here](https://discord.
 * Head to the bot tab and hit the CTA **Add Bot** button.
 * *For now you may want to untick the public bot option until your bot is 'ready' for general consumption.*
 * Copy your client_id from the general information page of the app.
-* Invite it to your test server by modifying this link:
+* Invite it to your test server by modifying this link using your client_id, then following it:
     `https://discord.com/api/oauth2/authorize?client_id=[CLIENT_ID]&scope=bot&permissions=11328`
 
 ## 0.5 Getting a Token
