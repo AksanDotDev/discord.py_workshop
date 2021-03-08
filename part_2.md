@@ -67,11 +67,13 @@ So that's some theory, lets get started in practise.
         await ctx.send("I can't hear you!")
 ```
 
-At it's heart we just attach a decorator the same way we did with a command only this is for a group and comes from the library not the bot, this is because we're in a `Cog` now, and because that's a class so we add a `self` argument to the function and otherwise this isn't much more complex than `test_response`.
+At it's heart we just attach a decorator the same way we did with a command only this is for a group and comes from the library not the bot, this is because we're in a `Cog` now, and because that's a class we add a `self` argument to the function.
+Otherwise this isn't much more complex than `test_response`, right?.
 
-Okay so about all those parameters... 
+Okay, so about all those parameters... 
 Case insensitivity must be set on a group by group basis, it won't follow the bot and here we carry on and set it to be true. 
 Now `invoke_without_command` is a slightly deceptive name as when true this group command is only invoked if there are no subcommands, if it's false it would be invoked regardless. 
+Might be easier to think of this as the negation of `invoke_with_command`.
 Finally, `pass_context` tells this to pass the context on trasparently to the subcommands if they are invoked.
 
 ### 2.3.2 A subcommand
@@ -79,7 +81,7 @@ Finally, `pass_context` tells this to pass the context on trasparently to the su
 So, now we add our command to this group. 
 
 ```Python
-@knock_root.command(
+    @knock_root.command(
         name="knock"
     )
     async def knock_knock(self, ctx):
@@ -116,7 +118,8 @@ Note we can assign using an awaited value, we just won't be continuing until we 
 
 ### 2.4.2 Back and forth
 
-So now, we have our second message from the user we can reply, first lets do some tidying up of their input, which we find in the `content` property of the message so it fits with our response, stripping spaces, final fullstops and capitalizing it.
+So, now we have our second message from the user, we can reply.
+First, lets do some tidying up of their input, which we find in the `content` property of the message so it fits with our response, stripping spaces, final fullstops and capitalizing it.
 
 ```Python
         rps = msg.content.strip().rstrip(".").capitalize()
@@ -138,7 +141,7 @@ Adding these two lines at the end, and the joys of unicode being valid strings m
 
 ## 2.5 Exchanges are good...
 
-So, lets talk about arguments, we kinda used one in the middle of that back and forth in how we processed the user input but now lets take some explicitly. 
+So, let's talk about arguments, we kinda used one in the middle of that back and forth in how we processed the user input but now lets take some explicitly. 
 
 ### 2.5.1 Taking an argument
 
@@ -156,13 +159,16 @@ Continuing our joke theme lets the bot set up some jokes for us to tell, this is
         )
 ```
 
-So, let take this apart, first, we have a new helper, usage, this allows us to provide a string that replaces the arguments in the command examples found in `help`, this can be useful for providing guidance on how to use your bot's more complex commands and we'll expand it later.
+So, let take this apart.
+First we have a new helper, `usage`, this allows us to provide a string that replaces the arguments in the command examples found in `help`.
+This can be useful for providing guidance on how to use your bot's more complex commands and we'll expand it later.
 Second we have a new argument to our command that tells it to look for a `str` given after the argument. 
 This works, but we can do better...
 
-### 2.5.2
+### 2.5.2 Debates, or sofisticated arguments
 
-Right now this bot will respond in the context that it got the command, but this is a bit limiting, sometimes we want to have our joke set up in another channel, or to set it up in a DM (okay, this is stretching the premise a bit, but think if you want to tell your bot where to send a log file or such), lets make it possible to do that. 
+Right now this bot will respond in the context that it got the command, but this is a bit limiting.
+Sometimes we want to have our joke set up in another channel, or to set it up in a DM (okay, this is stretching the premise a bit, but think if you want to tell your bot where to send a log file or such), lets make it possible to do that. 
 
 First we need to import a little help though.
 
@@ -172,7 +178,8 @@ from discord import TextChannel, Member
 ```
 
 Here we are bringing in some support for typing, you see discord.py has a lot of super intelligent converters that can give us arguments in the form we need them, but to do this we need to be able to tell the library what form that is. 
-Here is where we make some heavier use of the typing library that with the `str` hint and we want to use `Union` to do it, in effect `Union` lets us give a list of potential types for an argument to be, here either a channel or a person. 
+Here is where we make some heavier use of the typing library that with the `str` hint and we want to use `Union` to do it.
+In effect `Union` lets us give a list of potential types for an argument to be, here either a channel or a person. 
 *Side note, how you get a bot into a group DM is an advanced exercise left for the reader.*
 Now we can tell it the kinds of argument we want and it will try to convert whatever is passed in that space into one of those types as best it can. 
 
@@ -193,7 +200,9 @@ Now we can tell it the kinds of argument we want and it will try to convert what
             await ctx.send(rps)
 ```
 Now we see how we implement this, giving a default value `None` makes the argument optional, we've added to the `usage` parameter and then we've done some logic.
-Okay, logic is glossing over things, in case you didn't know Python has falsy and truthy values, with `None` being false and any object being truthy, this lets us do the simple `if tgt:` that will be executed if we have a `tgt` argument. 
-Finally the fact that all of those objects, channels and people, can be sent messages means we don't need to check the type we can just fire off the message. 
+Okay, logic is glossing over things.
+In case you didn't know, Python has falsy and truthy values, with `None` being falsey and any object being truthy.
+This lets us do the simple `if tgt:` that will be executed if we have a `tgt` argument that isn't `None`. 
+Finally, the fact that all of those objects, channels and people, can be sent messages means we don't need to check the type we can just fire off the message. 
 
 A final note on usage here, you can pass multiple words, including white space to a single argument, but you need to use quotes in your message e.g. `"text more text"`, in order to do it. 
