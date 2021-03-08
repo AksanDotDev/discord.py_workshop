@@ -46,6 +46,7 @@ if __name__ == "__main__":
 ```
 
 Now you can just run `python core.py` or whatever platform specific variant works for you in an apt terminal and your bot will run. 
+When need to stop it you can use `ctrl+C` to kill the process from the terminal. 
 
 ## 1.2 Doing Something
 
