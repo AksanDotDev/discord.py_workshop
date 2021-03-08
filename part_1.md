@@ -106,8 +106,8 @@ So, this may not be immediately nicer, it's an extra line, but we could compress
 * Gives us the option to set some command variables (we'll use this later)
 * Gives us some inherent goodness
 
-Something to note here is we need to `await` the call to `send` as this is 
-The `ctx` object is a fantastically powerful one, it operates as needed as the message that triggered this and the channel that it was sent in and gives us one stop for all the information that we need.
+Something to note here is we need to `await` the call to `send` as this is a coroutine that can run without blocking.
+Also the `ctx` object is a fantastically powerful one, it operates as needed as the message that invoked, the channel that it was sent in, and even more and gives us one stop for all the information that we need.
 
 ### 1.2.4 Finishing touches
 
